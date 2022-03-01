@@ -1765,6 +1765,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3386922730476383249}
   - component: {fileID: 1231554852141188200}
+  - component: {fileID: 8378391719850410247}
   m_Layer: 0
   m_Name: GroundCheck
   m_TagString: Untagged
@@ -1795,11 +1796,23 @@ BoxCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 632268921020512412}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 0.25, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &8378391719850410247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632268921020512412}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68912145fa740624b9ec98eaf5174e83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2028706314501640658
 GameObject:
   m_ObjectHideFlags: 0

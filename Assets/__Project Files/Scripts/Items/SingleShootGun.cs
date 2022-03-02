@@ -1,4 +1,5 @@
 ﻿
+using System.Collections;
 using UnityEngine;
 
 namespace Nasser.io
@@ -8,6 +9,10 @@ namespace Nasser.io
         [SerializeField] Camera cam;
         Ray ray;
         RaycastHit hit;
+
+
+        private string buuletImapctPrefab = "BulletImpact";
+        WaitForSeconds waitDestroy = new WaitForSeconds(2.5f);
 
         public override void Use()
         {
@@ -27,12 +32,22 @@ namespace Nasser.io
             }
         }
 
-        void BullectEffect(Vector3 hitPosition, Vector3 hitNormal , Transform hitTransform)
+        void BullectEffect(Vector3 hitPosition, Vector3 hitNormal, Transform hitTransform)
         {
 
-            var bulletObj = Instantiate(bulletImpactPrefab, hitPosition + hitNormal * 0.001f, Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation);
-            Destroy(bulletObj, 10f);
-            bulletObj.transform.parent = hitTransform;
+            var bulletObj = ObjectPooler.SharedInstance.GetPooledObject(buuletImapctPrefab);
+            bulletObj.SetActive(true);
+            bulletObj.transform.position = hitPosition + hitNormal * 0.001f;
+            bulletObj.transform.rotation = Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation;
+            StartCoroutine(WaiTForDestroy(bulletObj));
+        }
+
+        IEnumerator WaiTForDestroy(GameObject obj)
+        {
+
+            yield return waitDestroy;
+            obj.SetActive(false);
+
         }
     }
 }

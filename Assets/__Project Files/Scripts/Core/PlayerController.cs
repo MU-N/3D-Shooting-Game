@@ -1,7 +1,8 @@
-
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.EventSystems;
 
 
 
@@ -9,14 +10,16 @@ namespace Nasser.io
 {
     public class PlayerController : MonoBehaviour, IDamagable
     {
+        [Header("State")]
+        [SerializeField] GameState state;
         [Header("Health Bar UI")]
         [SerializeField] Image healthBarImage;
         [SerializeField] TextMeshProUGUI healthAmountText;
 
-        [Space]
+        [Header("Camera")]
         [SerializeField] GameObject cameraHolder;
 
-        [Space]
+        [Header("Controlles")]
         [SerializeField] float mouseSensitivity;
 
         [Space]
@@ -31,6 +34,9 @@ namespace Nasser.io
 
         [Space]
         [SerializeField] Item[] items;
+
+        [Header("Joystick")]
+        [SerializeField] Joystick androidJoystick;
 
         private int itemIndex;
         private int prevoiusItemIndex = -1;
@@ -57,6 +63,8 @@ namespace Nasser.io
         private const string horizontal = "Horizontal";
         private const string vertical = "Vertical";
         private const string mouseScrollWheel = "Mouse ScrollWheel";
+
+
         private void Awake()
         {
             rb = GetComponent<Rigidbody>();
@@ -74,30 +82,34 @@ namespace Nasser.io
 
         void Update()
         {
+            if (state.currentState == GameState.State.Play)
+            {
+                Look();
+                Move();
+                Jump();
+                SwitchWapons();
+                Shoot();
+                CheckMaxYPostion();
+            }
 
-
-            Look();
-            Move();
-            Jump();
-            SwitchWapons();
-            Shoot();
-            CheckMaxYPostion();
         }
 
 
 
         private void FixedUpdate()
         {
-
             rb.MovePosition(rb.position + transform.TransformDirection(moveAmount) * Time.deltaTime);
         }
 
 
         private void Look()
         {
+
             transform.Rotate(Vector3.up * Input.GetAxisRaw(mouseX) * mouseSensitivity);
 
+
             verticalLookRotation += Input.GetAxisRaw(mouseY) * mouseSensitivity;
+
             verticalLookRotation = Mathf.Clamp(verticalLookRotation, -60f, 60f);
 
             cameraHolder.transform.localEulerAngles = Vector3.left * verticalLookRotation;
@@ -106,18 +118,27 @@ namespace Nasser.io
         private void Move()
         {
             moveDirection = new Vector3(Input.GetAxisRaw(horizontal), 0f, Input.GetAxisRaw(vertical)).normalized;
+#if UNITY_ANDROID
+            moveDirection = new Vector3(androidJoystick.Horizontal, 0f, androidJoystick.Vertical).normalized;
+#endif
+
             moveAmount = Vector3.SmoothDamp(moveAmount, moveDirection *
                 (Input.GetKey(KeyCode.LeftShift) ? sprintSpeed : walkSpeed), ref smoothMoveVelocity, smoothTime);
         }
 
         private void Jump()
         {
-            if (Input.GetKey(KeyCode.Space) && isGrounded)
+            if (Input.GetKey(KeyCode.Space))
             {
-                rb.AddForce(Vector3.up * jumpForce);
+                JumpCall();
             }
         }
 
+        private void JumpCall()
+        {
+            if (isGrounded)
+                rb.AddForce(Vector3.up * jumpForce);
+        }
         public void SetGroundedState(bool grounded)
         {
             isGrounded = grounded;
@@ -137,7 +158,7 @@ namespace Nasser.io
 
             if (Input.GetAxisRaw(mouseScrollWheel) > 0f)
             {
-                if (itemIndex >= itemsArraySize)
+                if (itemIndex >= itemsArraySize - 1)
                     EquipItem(0);
                 else
                     EquipItem(itemIndex + 1);
@@ -170,15 +191,45 @@ namespace Nasser.io
 
         }
 
+        public void EquipRifle()
+        {
+            EquipItem(0);
+        }
+
+        public void EquipPistol()
+        {
+            EquipItem(1);
+        }
+
+
+
 
 
         private void Shoot()
         {
-            if (Input.GetMouseButtonDown(0))
+            if (Input.GetMouseButtonDown(0) && !IsPointerOverUIObject())
             {
-                items[itemIndex].Use();
+                ShootCall();
             }
         }
+
+        private void ShootCall()
+        {
+            items[itemIndex].Use();
+        }
+        //#if  UNITY_ANDROID
+
+
+        public void AndroidShoot()
+        {
+            ShootCall();
+        }
+
+        public void AndroidJump()
+        {
+            JumpCall();
+        }
+        //#endif
 
 
         // IDamagable intrface
@@ -194,7 +245,7 @@ namespace Nasser.io
 
         private void Die()
         {
-
+            transform.position = Vector3.zero;
         }
 
         private void CheckMaxYPostion()
@@ -202,6 +253,13 @@ namespace Nasser.io
             if (transform.position.y < -10f)
                 Die();
         }
-
+        private bool IsPointerOverUIObject()
+        {
+            PointerEventData eventDataCurrentPosition = new PointerEventData(EventSystem.current);
+            eventDataCurrentPosition.position = new Vector2(Input.mousePosition.x, Input.mousePosition.y);
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventDataCurrentPosition, results);
+            return results.Count > 0;
+        }
     }
 }

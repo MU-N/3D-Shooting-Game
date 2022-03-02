@@ -261,6 +261,14 @@ namespace Nasser.io
             dieEvent.Raise();
         }
 
+        public void Heal()
+        {
+            if (currentHealth + 25 <= 100)
+                currentHealth += 25;
+            else
+                currentHealth = 100;
+        }
+
         private void CheckMaxYPostion()
         {
             if (transform.position.y < -10f)

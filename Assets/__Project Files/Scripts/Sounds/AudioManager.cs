@@ -36,7 +36,6 @@ namespace Nasser.io
                 sound.source.outputAudioMixerGroup = sound.mixer;
             }
 
-            Play("Theme");
         }
 
         public void Play(string name)

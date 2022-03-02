@@ -6,16 +6,21 @@ namespace Nasser.io
 {
     public class GameController : MonoBehaviour
     {
-        // Start is called before the first frame update
+        [SerializeField] int startEnemyAmount;
+        private const string enemyTag = "Enemy";
         void Start()
         {
-        
+            CallEnmeyAmount(startEnemyAmount);
+            
         }
 
-        // Update is called once per frame
-        void Update()
+
+        private void CallEnmeyAmount(int amount)
         {
-        
+            for (int i = 0; i < amount; i++)
+            {
+                ObjectPooler.SharedInstance.GetPooledObject(enemyTag);
+            }
         }
     }
 }

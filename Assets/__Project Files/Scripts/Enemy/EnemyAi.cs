@@ -12,9 +12,13 @@ namespace Nasser.io
         [Header("Game State")]
         [SerializeField] GameState state;
         [SerializeField] Transform childTarget;
+        [SerializeField] Transform fireLoction;
+
+        [SerializeField] ItemInfo itemInfo;
 
         [Space]
         [SerializeField] float attackRange = 15f;
+        [SerializeField] int attackDelay = 5;
         [Space]
         private bool isTargetInAttackRange;
 
@@ -30,12 +34,15 @@ namespace Nasser.io
         private float currentHealth;
 
         const string player = "Player";
-
+        Ray ray;
+        RaycastHit hit;
+        bool isShoot = false;
 
         private int animWalk = Animator.StringToHash("isWalk");
         private int animShoot = Animator.StringToHash("isShoot");
         private int animDead = Animator.StringToHash("isDead");
-
+        
+            private const string dieSound = "Zoom";
         void Start()
         {
             target = GameObject.FindWithTag(player).transform;
@@ -72,6 +79,22 @@ namespace Nasser.io
             agent.SetDestination(transform.position);
             anim.SetBool(animShoot, true);
             transform.LookAt(target.GetChild(0));
+
+            if (!isShoot)
+            {
+                isShoot = true;
+                ray.direction = fireLoction.transform.forward;
+                ray.origin = fireLoction.transform.position;
+
+                if (Physics.Raycast(ray, out hit))
+                {
+                    hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
+
+                }
+                StartCoroutine(AttackTime(attackDelay));
+            }
+
+
         }
 
         public void TakeDamage(float damageAmount)
@@ -88,6 +111,7 @@ namespace Nasser.io
         {
             anim.SetBool(animDead, true);
             StartCoroutine(Countdown());
+            AudioManager.instance.Play(dieSound);
 
         }
 
@@ -112,10 +136,11 @@ namespace Nasser.io
             while (count > 0)
             {
                 yield return new WaitForSeconds(1);
-                
                 count--;
             }
-            
+            if (count <= 0)
+                isShoot = false;
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Nasser.io
     {
         [Header("State")]
         [SerializeField] GameState state;
+        [SerializeField] GameEvent dieEvent;
         [Header("Health Bar UI")]
         [SerializeField] Image healthBarImage;
         [SerializeField] TextMeshProUGUI healthAmountText;
@@ -63,6 +64,13 @@ namespace Nasser.io
         private const string horizontal = "Horizontal";
         private const string vertical = "Vertical";
         private const string mouseScrollWheel = "Mouse ScrollWheel";
+
+
+        private const string hitSound = "Hit";
+        private const string shootSound = "Shoot";
+        private const string jumpSound = "Jump";
+
+
 
 
         private void Awake()
@@ -137,8 +145,11 @@ namespace Nasser.io
         private void JumpCall()
         {
             if (isGrounded)
+            {
                 rb.AddForce(Vector3.up * jumpForce);
-        }
+                AudioManager.instance.Play(jumpSound);
+            }
+            }
         public void SetGroundedState(bool grounded)
         {
             isGrounded = grounded;
@@ -216,6 +227,8 @@ namespace Nasser.io
         private void ShootCall()
         {
             items[itemIndex].Use();
+            AudioManager.instance.Play(shootSound);
+
         }
         //#if  UNITY_ANDROID
 
@@ -238,14 +251,14 @@ namespace Nasser.io
             currentHealth -= damageAmount;
             healthBarImage.fillAmount = currentHealth / maxHealth;
             healthAmountText.text = $"{currentHealth}";
-
+            AudioManager.instance.Play(hitSound);
             if (currentHealth <= 0)
                 Die();
         }
 
         private void Die()
         {
-            transform.position = Vector3.zero;
+            dieEvent.Raise();
         }
 
         private void CheckMaxYPostion()

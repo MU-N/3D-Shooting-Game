@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Ground
   - BulletImpact
+  - BulletEffect
   layers:
   - Default
   - TransparentFX

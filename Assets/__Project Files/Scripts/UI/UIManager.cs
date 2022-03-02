@@ -54,6 +54,12 @@ namespace Nasser.io
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
+        public void LostGameGame()
+        {
+            state.currentState = GameState.State.End;
+        }
+
+
 
         IEnumerator Countdown(int seconds)
         {

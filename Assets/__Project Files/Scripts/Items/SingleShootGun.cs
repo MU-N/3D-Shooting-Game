@@ -7,12 +7,17 @@ namespace Nasser.io
     public class SingleShootGun : Gun
     {
         [SerializeField] Camera cam;
+        [SerializeField] Transform fireLocation;
         Ray ray;
         RaycastHit hit;
 
 
-        private string buuletImapctPrefab = "BulletImpact";
+
+        private string bulletImapctPrefab = "BulletImpact";
+        private string bulletEffectPrefab = "BulletEffect";
         WaitForSeconds waitDestroy = new WaitForSeconds(2.5f);
+
+
 
         public override void Use()
         {
@@ -28,18 +33,25 @@ namespace Nasser.io
             if (Physics.Raycast(ray, out hit))
             {
                 hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
-                BullectEffect(hit.point, hit.normal, hit.transform);
+                BullectEffect(hit.point, hit.normal);
             }
         }
 
-        void BullectEffect(Vector3 hitPosition, Vector3 hitNormal, Transform hitTransform)
+        void BullectEffect(Vector3 hitPosition, Vector3 hitNormal)
         {
 
-            var bulletObj = ObjectPooler.SharedInstance.GetPooledObject(buuletImapctPrefab);
+            var bulletObj = ObjectPooler.SharedInstance.GetPooledObject(bulletImapctPrefab);
             bulletObj.SetActive(true);
             bulletObj.transform.position = hitPosition + hitNormal * 0.001f;
             bulletObj.transform.rotation = Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation;
             StartCoroutine(WaiTForDestroy(bulletObj));
+
+            var bulletEffect = ObjectPooler.SharedInstance.GetPooledObject(bulletEffectPrefab);
+            bulletEffect.transform.position = fireLocation.position;
+            bulletEffect.transform.rotation = fireLocation.rotation;
+            bulletEffect.SetActive(true);
+
+            StartCoroutine(WaiTForDestroy(bulletEffect));
         }
 
         IEnumerator WaiTForDestroy(GameObject obj)
@@ -49,5 +61,6 @@ namespace Nasser.io
             obj.SetActive(false);
 
         }
+
     }
 }

@@ -8,15 +8,13 @@ namespace Nasser.io
     {
         public static SpwanManager instance;
 
-        SpwanPoint[] spwanEnemyPoints;
-        SpwanPoint[] spwanHealPoints;
+        [SerializeField] SpwanPoint[] spwanEnemyPoints;
+        [SerializeField] SpwanPoint[] spwanHealPoints;
         int spwaneEnemyPointsSize ; 
         int spwanHealPointsSize ; 
         private void Awake()
         {
             instance = this;
-            spwanEnemyPoints = GetComponentsInChildren<SpwanPoint>();
-            spwanHealPoints = GetComponentsInChildren<SpwanPoint>();
             spwaneEnemyPointsSize = spwanEnemyPoints.Length;
             spwanHealPointsSize = spwanHealPoints.Length;   
         }

@@ -26,7 +26,7 @@ namespace Nasser.io
         }
         public Transform GetSpwanHealPoint()
         {
-            return spwanEnemyPoints[Random.Range(0, spwanHealPointsSize)].transform;
+            return spwanHealPoints[Random.Range(0, spwanHealPointsSize)].transform;
         }
     }
 }

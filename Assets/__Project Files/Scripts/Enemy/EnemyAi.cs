@@ -11,6 +11,8 @@ namespace Nasser.io
     {
         [Header("Game State")]
         [SerializeField] GameState state;
+        [Space]
+        [SerializeField] GameEvent killed;
         [SerializeField] Transform childTarget;
         [SerializeField] Transform fireLoction;
 
@@ -37,12 +39,13 @@ namespace Nasser.io
         Ray ray;
         RaycastHit hit;
         bool isShoot = false;
+        bool isDead = false;
 
         private int animWalk = Animator.StringToHash("isWalk");
         private int animShoot = Animator.StringToHash("isShoot");
         private int animDead = Animator.StringToHash("isDead");
-        
-            private const string dieSound = "Zoom";
+
+        private const string dieSound = "Zoom";
         void Start()
         {
             target = GameObject.FindWithTag(player).transform;
@@ -56,7 +59,8 @@ namespace Nasser.io
         void Update()
         {
             childTarget.position = target.GetChild(0).position;
-            if (state.currentState == GameState.State.Play)
+
+            if (state.currentState == GameState.State.Play && !isDead)
             {
                 isTargetInAttackRange = Vector3.Distance(transform.position, target.position) <= attackRange;
                 if (!isTargetInAttackRange)
@@ -71,13 +75,16 @@ namespace Nasser.io
         {
             agent.SetDestination(target.position);
             transform.LookAt(target.GetChild(0));
+            transform.GetChild(0).position = transform.position;
             anim.SetBool(animWalk, true);
+            anim.SetBool(animShoot, false);
         }
 
         private void ShootTarget()
         {
             agent.SetDestination(transform.position);
             anim.SetBool(animShoot, true);
+            anim.SetBool(animWalk, false);
             transform.LookAt(target.GetChild(0));
 
             if (!isShoot)
@@ -100,26 +107,36 @@ namespace Nasser.io
         public void TakeDamage(float damageAmount)
         {
             currentHealth -= damageAmount;
-            healthBarImage.fillAmount = currentHealth / maxHealth;
-            healthAmountText.text = $"{currentHealth}";
+            if(currentHealth <= 0) currentHealth = 0;
+            UpdateHeathUi();
 
             if (currentHealth <= 0)
                 Die();
         }
 
+        private void UpdateHeathUi()
+        {
+            healthBarImage.fillAmount = currentHealth / maxHealth;
+            healthAmountText.text = $"{currentHealth}";
+        }
+
         private void Die()
         {
+            isDead = true;
             anim.SetBool(animDead, true);
             StartCoroutine(Countdown());
             AudioManager.instance.Play(dieSound);
-
+            killed.Raise();
         }
 
         private void RestartEnemy()
         {
+            Debug.Log("Called");
             currentHealth = maxHealth;
+            UpdateHeathUi();
+            transform.GetChild(0).position = new Vector3(0, 0, 0);
             anim.SetBool(animDead, false);
-            anim.SetBool(animWalk, false);
+            anim.SetBool(animWalk, true);
             anim.SetBool(animShoot, false);
         }
         IEnumerator Countdown()

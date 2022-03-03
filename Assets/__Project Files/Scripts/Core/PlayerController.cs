@@ -13,6 +13,7 @@ namespace Nasser.io
         [Header("State")]
         [SerializeField] GameState state;
         [SerializeField] GameEvent dieEvent;
+        [SerializeField] GameEvent damageEfeect;
         [Header("Health Bar UI")]
         [SerializeField] Image healthBarImage;
         [SerializeField] TextMeshProUGUI healthAmountText;
@@ -249,11 +250,17 @@ namespace Nasser.io
         public void TakeDamage(float damageAmount)
         {
             currentHealth -= damageAmount;
-            healthBarImage.fillAmount = currentHealth / maxHealth;
-            healthAmountText.text = $"{currentHealth}";
+            UpdateHealthUi();
             AudioManager.instance.Play(hitSound);
+            damageEfeect.Raise();
             if (currentHealth <= 0)
                 Die();
+        }
+
+        private void UpdateHealthUi()
+        {
+            healthBarImage.fillAmount = currentHealth / maxHealth;
+            healthAmountText.text = $"{currentHealth}";
         }
 
         private void Die()
@@ -267,6 +274,8 @@ namespace Nasser.io
                 currentHealth += 25;
             else
                 currentHealth = 100;
+            UpdateHealthUi();
+
         }
 
         private void CheckMaxYPostion()

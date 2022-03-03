@@ -35,6 +35,8 @@ namespace Nasser.io
                 hit.collider.gameObject.GetComponent<IDamagable>()?.TakeDamage(((GunInfo)itemInfo).damage);
                 BullectEffect(hit.point, hit.normal);
             }
+
+            FireBulletEffect();
         }
 
         void BullectEffect(Vector3 hitPosition, Vector3 hitNormal)
@@ -46,6 +48,11 @@ namespace Nasser.io
             bulletObj.transform.rotation = Quaternion.LookRotation(hitNormal, Vector3.up) * bulletImpactPrefab.transform.rotation;
             StartCoroutine(WaiTForDestroy(bulletObj));
 
+           
+        }
+
+        private void FireBulletEffect()
+        {
             var bulletEffect = ObjectPooler.SharedInstance.GetPooledObject(bulletEffectPrefab);
             bulletEffect.transform.position = fireLocation.position;
             bulletEffect.transform.rotation = fireLocation.rotation;

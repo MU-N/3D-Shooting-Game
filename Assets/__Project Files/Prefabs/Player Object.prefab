@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 824054598}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.138, z: 0.633}
+  m_LocalPosition: {x: 0, y: 0.138, z: 0.38}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1892,7 +1892,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1896470539}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.304, z: 2.079}
+  m_LocalPosition: {x: 0, y: 0.3, z: 1.58}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2154,6 +2154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: {fileID: 11400000, guid: 548bdfa76b607854a8986b9004caca7c, type: 2}
+  dieEvent: {fileID: 11400000, guid: 7fb2b317b6dc5774183c427316daebe6, type: 2}
+  damageEfeect: {fileID: 11400000, guid: 5e464b86e27fa95498ff96467e89701a, type: 2}
   healthBarImage: {fileID: 0}
   healthAmountText: {fileID: 0}
   cameraHolder: {fileID: 5078789614169469242}

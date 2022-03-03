@@ -8,4 +8,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/__Project Files/Scenes/3D Shooting Main.unity
     guid: f6c0b3dd4da15e74f8701aa9a177ebf1
-  m_configObjects: {}
+  m_configObjects:
+    Unity.XR.Oculus.Settings: {fileID: 11400000, guid: 99c5b699d0a9e724eb80db921473dadb, type: 2}
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: e74108b41f1e84340ab4bd9332555408, type: 2}

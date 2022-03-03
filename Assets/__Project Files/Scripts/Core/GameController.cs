@@ -14,6 +14,7 @@ namespace Nasser.io
 
         private int enemyRand;
         private int HealsRand;
+        int count = 0;
 
         GameObject enemy;
         GameObject heal;
@@ -35,6 +36,7 @@ namespace Nasser.io
                 enemy = ObjectPooler.SharedInstance.GetPooledObject(enemyTag);
                 enemy.SetActive(true);
                 enemy.transform.position = SpwanManager.instance.GetSpwanEnemyPoint().position;
+                
             }
         }
         
@@ -50,9 +52,9 @@ namespace Nasser.io
 
         IEnumerator AttackTime(int seconds)
         {
-            int count = 0;
 
-            while (count > seconds)
+            count = 0;
+            while (count < seconds)
             {
                 yield return new WaitForSeconds(1);
                 count++;
@@ -61,12 +63,13 @@ namespace Nasser.io
                 if (count % 30 == 0)
                 {
                     enemyRand = Random.Range(minEnemyAmount, maxEnemyAmount);
+
                     CallEnmeyAmount(enemyRand);
                 }
                 if (count % 60 == 0)
                 {
-                    enemyRand = Random.Range(minhealAmount, maxhealAmount);
-                    CallHealAmount(enemyRand);
+                    HealsRand = Random.Range(minhealAmount, maxhealAmount);
+                    CallHealAmount(HealsRand);
                 }
             }
             

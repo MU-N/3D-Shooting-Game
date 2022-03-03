@@ -2997,6 +2997,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   state: {fileID: 11400000, guid: 548bdfa76b607854a8986b9004caca7c, type: 2}
+  killed: {fileID: 11400000, guid: b7e9e2d66523b664c9c909a91cbcd79d, type: 2}
   childTarget: {fileID: 657180975}
   fireLoction: {fileID: 2810050988882746968}
   itemInfo: {fileID: 11400000, guid: 5857b35617e3e4a4e9873f99534d6af0, type: 2}

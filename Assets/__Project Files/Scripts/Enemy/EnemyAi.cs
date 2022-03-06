@@ -134,7 +134,8 @@ namespace Nasser.io
             Debug.Log("Called");
             currentHealth = maxHealth;
             UpdateHeathUi();
-            transform.GetChild(0).position = new Vector3(0, 0, 0);
+            transform.GetChild(0).position = transform.position;
+            isDead = false;
             anim.SetBool(animDead, false);
             anim.SetBool(animWalk, true);
             anim.SetBool(animShoot, false);
